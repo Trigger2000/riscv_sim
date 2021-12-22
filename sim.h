@@ -4,16 +4,14 @@
 #include "utils/ins.h"
 #include <vector>
 
-class simulation 
+class simulation
 {
-public:
-    simulation();
+  public:
+    simulation ();
 
-    bool Simulate(std::vector<Ins>) {
-        return true;
-    }
-private:
-    
+    bool Simulate (std::vector<Ins>) { return true; }
+
+  private:
 };
 
 #endif // __SIM_H_INCLUDED__

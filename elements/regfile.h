@@ -6,27 +6,29 @@
 #include "../stages/stage.h"
 #include "../utils/ins.h"
 
-struct regfile {
-
-    regfile(uint32_t A1, uint32_t A2, uint32_t A3, uint32_t D3, bool WE3):
-    A1_(A1), A2_(A2), WE3_(WE3)
+struct regfile
+{
+    regfile (uint32_t A1, uint32_t A2, uint32_t A3, uint32_t D3, bool WE3)
+        : A1_ (A1), A2_ (A2), WE3_ (WE3)
     {
         if (WE3_) {
             A3_ = A3;
-            assert(A3_ < bitness);
+            assert (A3_ < bitness);
             registers_[A3_] = D3;
         }
     }
 
-    ~regfile() = default;
+    ~regfile () = default;
 
-    int32_t get_D1() {
-        assert(A1_ < bitness);
+    int32_t get_D1 ()
+    {
+        assert (A1_ < bitness);
         return registers_[A1_];
     }
 
-    int32_t get_D2() {
-        assert(A2_ < bitness);
+    int32_t get_D2 ()
+    {
+        assert (A2_ < bitness);
         return registers_[A2_];
     }
 
@@ -45,12 +47,12 @@ struct regfile {
         A3_ = data;
     } */
 
-private:
-    std::array<int32_t, bitness> registers_{0};
+  private:
+    std::array<int32_t, bitness> registers_{ 0 };
 
-    uint32_t A1_ = 0; // rs1
-    uint32_t A2_ = 0; // rs2
-    uint32_t A3_ = 0; // WB_A, aka rd
+    uint32_t A1_ = 0;  // rs1
+    uint32_t A2_ = 0;  // rs2
+    uint32_t A3_ = 0;  // WB_A, aka rd
     bool WE3_ = false; // WB_WE
 };
 

@@ -6,17 +6,14 @@
 #include "../stages/stage.h"
 #include "../utils/ins.h"
 
+struct Imem
+{
+    Imem (std::vector<Ins> instructions) : instructions_ (instructions) {}
+    ~Imem () = default;
 
-struct imem {
+    Ins Fetch (const PC &pc) { return instructions_[pc.get_current ()]; }
 
-    imem(std::vector<Ins> instructions): instructions_(instructions) {}
-    ~imem() = default;
-
-    Ins fetch(const PC& pc) {
-        return instructions_[pc.get_current()];
-    }
-
-private:
+  private:
     std::vector<Ins> instructions_;
 };
 
