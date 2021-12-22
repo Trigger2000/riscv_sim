@@ -1,0 +1,4 @@
+#ifndef __STAGE_MEMORY_H_INCLUDED__
+#define __STAGE_MEMORY_H_INCLUDED__
+
+#endif
