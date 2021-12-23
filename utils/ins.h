@@ -78,26 +78,26 @@ class Ins
     Ins() = delete;
     ~Ins() = default;
 
-    // Ins(uint32_t bits) : ins_raw(bits)
-    // {
-    //     fmt = OpcodeToFormat(ins_raw);
-
-    //     if (fmt == InsFormat::INVALID) {
-    //         std::cerr << "[ERROR] <Ins> invalid operation format";
-    //     }
-    // }
-
     Ins(uint32_t bits, InsFormat format, InsMnemonic mnemonic)
         : ins_raw(bits), fmt(format), mnm(mnemonic)
     {}
 
-    inline InsFormat GetInsFormat() const { return fmt; }
+    inline InsFormat GetInsFormat() const
+    {
+        return fmt;
+    }
 
-    inline InsMnemonic GetInsMnemonic() const { return mnm; }
+    inline InsMnemonic GetInsMnemonic() const
+    {
+        return mnm;
+    }
 
-    inline uint32_t GetInsRaw() const { return ins_raw; }
+    inline uint32_t GetInsRaw() const
+    {
+        return ins_raw;
+    }
 
-    bool GetRs1(uint32_t *rs1) const
+    bool GetRs1(uint32_t* rs1) const
     {
         assert(rs1 != nullptr);
 
@@ -113,7 +113,7 @@ class Ins
         }
     }
 
-    bool GetRs2(uint32_t *rs2) const
+    bool GetRs2(uint32_t* rs2) const
     {
         assert(rs2 != nullptr);
 
@@ -128,7 +128,7 @@ class Ins
         }
     }
 
-    bool GetRd(uint32_t *rd) const
+    bool GetRd(uint32_t* rd) const
     {
         assert(rd != nullptr);
 
@@ -144,9 +144,12 @@ class Ins
         }
     }
 
-    uint32_t GetImmSign() const { return ins_raw & MASK_MSB; }
+    uint32_t GetImmSign() const
+    {
+        return ins_raw & MASK_MSB;
+    }
 
-    bool GetImm(int32_t *imm) const
+    bool GetImm(int32_t* imm) const
     {
         assert(imm != nullptr);
 
@@ -628,43 +631,6 @@ class Ins
     {
         return abs(imm) | ((imm < 0) ? MASK_MSB : 0x0);
     }
-
-    // static InsFormat OpcodeToFormat(uint32_t ins)
-    // {
-    //     uint32_t opcode = ins & MASK_OPCODE;
-
-    //     switch (opcode) {
-    //     case Ins_R_OPCODE::R:
-    //         return InsFormat::R;
-    //         break;
-    //     case Ins_I_OPCODE::ARITHMETIC:
-    //         return InsFormat::I;
-    //         break;
-    //     case Ins_I_OPCODE::LOAD:
-    //         return InsFormat::I;
-    //         break;
-    //     case Ins_S_OPCODE::S:
-    //         return InsFormat::S;
-    //         break;
-    //     case Ins_B_OPCODE::B:
-    //         return InsFormat::B;
-    //         break;
-    //     case Ins_U_OPCODE::LUI:
-    //         return InsFormat::U;
-    //         break;
-    //     case Ins_U_OPCODE::AUIPC:
-    //         return InsFormat::U;
-    //         break;
-    //     case Ins_J_OPCODE::J:
-    //         return InsFormat::J;
-    //         break;
-    //     case Ins_I_OPCODE::JALR:
-    //         return InsFormat::I;
-    //         break;
-    //     default:
-    //         return InsFormat::INVALID;
-    //     }
-    // }
 
     uint32_t ins_raw;
     InsFormat fmt;

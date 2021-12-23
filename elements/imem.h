@@ -3,15 +3,26 @@
 
 #include <vector>
 
-#include "../stages/stage.h"
-#include "../utils/ins.h"
+#include "utils/ins.h"
+#include "utils/simulation_state.h"
 
 struct Imem
 {
-    Imem (std::vector<Ins> instructions) : instructions_ (instructions) {}
-    ~Imem () = default;
+    Imem() = default;
 
-    Ins Fetch (const PC &pc) { return instructions_[pc.get_current ()]; }
+    Imem(std::vector<Ins> instructions) : instructions_(instructions)
+    {}
+    ~Imem() = default;
+
+    // void set(std::vector<Ins>& instructions)
+    // {
+    //     instructions_ = instructions;
+    // }
+
+    Ins Fetch(const ProgramCounter& pc)
+    {
+        return instructions_[pc.get_current()];
+    }
 
   private:
     std::vector<Ins> instructions_;
