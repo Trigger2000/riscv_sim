@@ -14,6 +14,8 @@ add_subdirectory(utils)
 
 add_executable(sim simulation.cpp sim.cpp)
 
+target_include_directories(sim PRIVATE ${PROJECT_SOURCE_DIR})
+
 target_link_libraries(sim utils)
 target_link_libraries(sim stages)
 target_link_libraries(sim elements)

@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include "utils/defines.h"
 #include "utils/ins.h"
 #include "utils/simulation_state.h"
 
@@ -14,14 +15,13 @@ struct Imem
     {}
     ~Imem() = default;
 
-    // void set(std::vector<Ins>& instructions)
-    // {
-    //     instructions_ = instructions;
-    // }
-
-    Ins Fetch(const ProgramCounter& pc)
+    Ins Fetch(const uint32_t pc)
     {
-        return instructions_[pc.get_current()];
+        assert(pc % INSTRUCTION_LENGTH == 0);
+        uint32_t pos = static_cast<uint32_t>(pc / INSTRUCTION_LENGTH);
+        assert(pos < instructions_.size());
+
+        return instructions_[pos];
     }
 
   private:

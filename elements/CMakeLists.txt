@@ -5,7 +5,7 @@ add_library(elements SHARED
             dmem.cpp
             imm.cpp
             mux.cpp
-            Regfile.cpp
+            regfile.cpp
             )
 
 # target_include_directories(elements ...)

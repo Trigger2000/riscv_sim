@@ -4,7 +4,8 @@
 #include <cassert>
 #include <cstdint>
 
-static uint32_t Mux2(uint32_t i0, uint32_t i1, uint32_t sel)
+template <typename T>
+T Mux2(T i0, T i1, uint32_t sel)
 {
     switch (sel) {
     case 0b0:
@@ -16,7 +17,8 @@ static uint32_t Mux2(uint32_t i0, uint32_t i1, uint32_t sel)
     }
 }
 
-static uint32_t Mux3(uint32_t i0, uint32_t i1, uint32_t i2, uint32_t sel)
+template <typename T>
+T Mux3(T i0, T i1, T i2, uint32_t sel)
 {
     switch (sel) {
     case 0b00:

@@ -1,58 +1,81 @@
-#include "elements/control_unit.h"
 #include "elements/regfile.h"
 #include "utils/ins.h"
-#include "utils/simulation_state.h"
+#include "utils/registers.h"
+#include <cassert>
 
 #ifndef __STAGE_DECODE_H_INCLUDED__
 #define __STAGE_DECODE_H_INCLUDED__
-
-bool PC_R = false;
 
 struct StageDecode
 {
     StageDecode() = default;
     ~StageDecode() = default;
 
-    void run(SimulationState* state)
+    void SetRegfileData(uint32_t adr, int32_t data)
     {
-        // control_registers output;
-
-        Ins instr_after_fetch = FETCH_DECODE_REG.ins_after_fetch;
-        register_file.instr_after_fetch.GetRs1(), instr_after_fetch.GetRs2(),
-            // MEM_WB_REG.WB_A, MEM_WB_REG.WB_D, MEM_WB_REG.WB_WE);
-
-            state->DECODE_EXEC_REG.D1 = register_file.Get_D1();
-        state->DECODE_EXEC_REG.D2 = register_file.Get_D2();
-
-        uint32_t sign_bit_not_extended = instr_after_fetch.GetImmSign();
-        DECODE_EXEC_REG.sign_bit = sign_extend_sign_bit(sign_bit_not_extended);
-
-        Control_unit control_unit(instr_after_fetch);
-
-        // extend this method while developing
-        control_unit.get_signals();
-
-        DECODE_EXEC_REG.pc = FETCH_DECODE_REG.pc;
-
-        if (PC_R != false || FETCH_DECODE_REG.PC_R != false) {
-            DECODE_EXEC_REG.v_de = true;
-        }
-
-        DECODE_EXEC_REG.wb_a = instr_after_fetch.GetRd();
-        DECODE_EXEC_REG.imm = instr_after_fetch.GetImm();
+        regfile_.SetD(adr, data);
     }
 
-    uint32_t sign_extend_sign_bit(uint32_t input)
+    int32_t GetRegfileData(uint32_t adr)
     {
-        uint32_t result = 0x00000000;
-        if (input & 1 == 1) {
-            result = 0xFFFFFFFF;
+        return regfile_.GetD(adr);
+    }
+
+    RegisterDecodeExecute run(const RegisterFetchDecode& input_reg,
+                              SimulationSignals* signals)
+    {
+        assert(signals != nullptr);
+
+        RegisterDecodeExecute output_reg;
+        Ins instr_after_fetch = input_reg.ins;
+
+        uint32_t rs1 = 0;
+        uint32_t rs2 = 0;
+        instr_after_fetch.GetRs1(&rs1);
+        instr_after_fetch.GetRs2(&rs2);
+
+        output_reg.D1 = regfile_.GetD(rs1);
+        output_reg.D2 = regfile_.GetD(rs2);
+
+        if (signals->WB_WE != 0) {
+            regfile_.SetD(signals->WB_A, signals->WB_D);
         }
-        return result;
+
+        // maybe not needed
+        output_reg.sign_bit =
+            SignExtendSignBit(instr_after_fetch.GetImmSign());
+
+        output_reg.CONTROL_EX = RunControlUnit(instr_after_fetch);
+        output_reg.PC_EX = input_reg.PC;
+
+        if (signals->PC_R == 1 || input_reg.PC_R == 1) {
+            output_reg.V_EX = 1;
+        }
+
+        instr_after_fetch.GetRd(&output_reg.WB_A);
+        instr_after_fetch.GetImm(&output_reg.imm);
+
+        return output_reg;
     }
 
   private:
-    Regfile register_file_{};
+    Regfile regfile_;
+
+    uint32_t SignExtendSignBit(uint32_t input)
+    {
+        return input ? 0xFFFFFFFF : 0x00000000;
+    }
+
+    RegisterDecodeExecute::ControlEx RunControlUnit(Ins instr)
+    {
+        RegisterDecodeExecute::ControlEx output;
+
+        // set signals here
+        output.ALUOP = instr.GetInsMnemonic();
+        output.ALU_SRC2 = (instr.GetInsFormat() != Ins::InsFormat::R) ? 1 : 0;
+
+        return output;
+    }
 };
 
 #endif

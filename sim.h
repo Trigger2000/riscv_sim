@@ -13,19 +13,20 @@ class Simulation
     {}
     ~Simulation() = default;
 
-    bool Simulate(const std::vector<Ins>& ins)
-    {
-        // StageFetch(ins);
-        // StageExecute();
+    // bool Simulate(const std::vector<Ins>& ins)
+    // {
+    //     StageFetch(ins);
+    //     StageExecute();
 
-        // while (1) {
-        //     ...
-        //     // run
-        // }
-    }
+    //     while (1) {
+    //         ...
+    //         // run
+    //     }
+    // }
 
   private:
     SimulationState state_;
+    SimulationSignals sigs_;
 };
 
 #endif // __SIM_H_INCLUDED__

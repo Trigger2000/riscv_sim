@@ -16,4 +16,4 @@ set(TESTS_INSTRUCTIONS
 
 add_executable(tests_instructions ${TESTS_INSTRUCTIONS})
 target_link_libraries(tests_instructions utils ${GTEST_LIBRARIES} pthread)
-target_include_directories(tests_instructions PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(tests_instructions PRIVATE ${PROJECT_SOURCE_DIR})

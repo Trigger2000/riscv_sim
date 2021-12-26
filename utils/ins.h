@@ -73,9 +73,12 @@ class Ins
 
         // J
         JAL,
+
+        INVALID,
     };
 
-    Ins() = delete;
+    Ins() : ins_raw(0), fmt(InsFormat::INVALID), mnm(InsMnemonic::INVALID)
+    {}
     ~Ins() = default;
 
     Ins(uint32_t bits, InsFormat format, InsMnemonic mnemonic)
@@ -155,7 +158,7 @@ class Ins
 
         switch (fmt) {
         case InsFormat::R:
-            return true;
+            return false;
         case InsFormat::I: {
             uint32_t res = 0;
             uint32_t sign = 0;
@@ -245,52 +248,53 @@ class Ins
         return Ins(ins, InsFormat::R, mnemonic);
     }
 
-    static Ins MakeIns_ADD(uint32_t rs2, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_ADD(uint32_t rs2 = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_R(0b0000000, rs2, rs1, 0b000, rd, InsMnemonic::ADD);
     }
 
-    static Ins MakeIns_SUB(uint32_t rs2, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_SUB(uint32_t rs2 = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_R(0b0100000, rs2, rs1, 0b000, rd, InsMnemonic::SUB);
     }
 
-    static Ins MakeIns_SLL(uint32_t rs2, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_SLL(uint32_t rs2 = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_R(0b0000000, rs2, rs1, 0b001, rd, InsMnemonic::SLL);
     }
 
-    static Ins MakeIns_SLT(uint32_t rs2, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_SLT(uint32_t rs2 = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_R(0b0000000, rs2, rs1, 0b010, rd, InsMnemonic::SLT);
     }
 
-    static Ins MakeIns_SLTU(uint32_t rs2, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_SLTU(uint32_t rs2 = 0, uint32_t rs1 = 0,
+                            uint32_t rd = 0)
     {
         return MakeIns_R(0b0000000, rs2, rs1, 0b011, rd, InsMnemonic::SLTU);
     }
 
-    static Ins MakeIns_XOR(uint32_t rs2, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_XOR(uint32_t rs2 = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_R(0b0000000, rs2, rs1, 0b100, rd, InsMnemonic::XOR);
     }
 
-    static Ins MakeIns_SRL(uint32_t rs2, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_SRL(uint32_t rs2 = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_R(0b0000000, rs2, rs1, 0b101, rd, InsMnemonic::SRL);
     }
 
-    static Ins MakeIns_SRA(uint32_t rs2, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_SRA(uint32_t rs2 = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_R(0b0100000, rs2, rs1, 0b101, rd, InsMnemonic::SRA);
     }
 
-    static Ins MakeIns_OR(uint32_t rs2, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_OR(uint32_t rs2 = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_R(0b0000000, rs2, rs1, 0b110, rd, InsMnemonic::OR);
     }
 
-    static Ins MakeIns_AND(uint32_t rs2, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_AND(uint32_t rs2 = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_R(0b0000000, rs2, rs1, 0b111, rd, InsMnemonic::AND);
     }
@@ -320,43 +324,44 @@ class Ins
         return Ins(ins, InsFormat::I, mnemonic);
     }
 
-    static Ins MakeIns_ADDI(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_ADDI(int32_t imm = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_I(imm, rs1, 0b000, rd, Ins_I_OPCODE::ARITHMETIC,
                          InsMnemonic::ADDI);
     }
 
-    static Ins MakeIns_SLTI(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_SLTI(int32_t imm = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_I(imm, rs1, 0b010, rd, Ins_I_OPCODE::ARITHMETIC,
-                         InsMnemonic::SLLI);
+                         InsMnemonic::SLTI);
     }
 
-    static Ins MakeIns_SLTUI(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_SLTUI(int32_t imm = 0, uint32_t rs1 = 0,
+                             uint32_t rd = 0)
     {
         return MakeIns_I(imm, rs1, 0b011, rd, Ins_I_OPCODE::ARITHMETIC,
                          InsMnemonic::SLTUI);
     }
 
-    static Ins MakeIns_XORI(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_XORI(int32_t imm = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_I(imm, rs1, 0b100, rd, Ins_I_OPCODE::ARITHMETIC,
                          InsMnemonic::XORI);
     }
 
-    static Ins MakeIns_ORI(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_ORI(int32_t imm = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_I(imm, rs1, 0b110, rd, Ins_I_OPCODE::ARITHMETIC,
                          InsMnemonic::ORI);
     }
 
-    static Ins MakeIns_ANDI(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_ANDI(int32_t imm = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_I(imm, rs1, 0b111, rd, Ins_I_OPCODE::ARITHMETIC,
                          InsMnemonic::ANDI);
     }
 
-    static Ins MakeIns_SLLI(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_SLLI(int32_t imm = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         imm &= 0b000000011111;
 
@@ -364,7 +369,7 @@ class Ins
                          InsMnemonic::SLLI);
     }
 
-    static Ins MakeIns_SRLI(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_SRLI(int32_t imm = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         imm &= 0b000000011111;
 
@@ -372,7 +377,7 @@ class Ins
                          InsMnemonic::SRLI);
     }
 
-    static Ins MakeIns_SRAI(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_SRAI(int32_t imm = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         imm &= 0b000000011111;
         imm |= 0b010000000000;
@@ -380,37 +385,37 @@ class Ins
                          InsMnemonic::SRAI);
     }
 
-    static Ins MakeIns_LB(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_LB(int32_t imm = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_I(imm, rs1, 0b000, rd, Ins_I_OPCODE::LOAD,
                          InsMnemonic::LB);
     }
 
-    static Ins MakeIns_LH(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_LH(int32_t imm = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_I(imm, rs1, 0b001, rd, Ins_I_OPCODE::LOAD,
                          InsMnemonic::LH);
     }
 
-    static Ins MakeIns_LW(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_LW(int32_t imm = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_I(imm, rs1, 0b010, rd, Ins_I_OPCODE::LOAD,
                          InsMnemonic::LW);
     }
 
-    static Ins MakeIns_LBU(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_LBU(int32_t imm = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_I(imm, rs1, 0b100, rd, Ins_I_OPCODE::LOAD,
                          InsMnemonic::LBU);
     }
 
-    static Ins MakeIns_LHU(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_LHU(int32_t imm = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_I(imm, rs1, 0b101, rd, Ins_I_OPCODE::LOAD,
                          InsMnemonic::LHU);
     }
 
-    static Ins MakeIns_JALR(int32_t imm, uint32_t rs1, uint32_t rd)
+    static Ins MakeIns_JALR(int32_t imm = 0, uint32_t rs1 = 0, uint32_t rd = 0)
     {
         return MakeIns_I(imm, rs1, 0b000, rd, Ins_I_OPCODE::JALR,
                          InsMnemonic::JALR);
@@ -442,17 +447,17 @@ class Ins
         return Ins(ins, InsFormat::S, mnemonic);
     }
 
-    static Ins MakeIns_SB(int32_t imm, uint32_t rs2, uint32_t rs1)
+    static Ins MakeIns_SB(int32_t imm = 0, uint32_t rs2 = 0, uint32_t rs1 = 0)
     {
         return MakeIns_S(imm, rs2, rs1, 0b000, InsMnemonic::SB);
     }
 
-    static Ins MakeIns_SH(int32_t imm, uint32_t rs2, uint32_t rs1)
+    static Ins MakeIns_SH(int32_t imm = 0, uint32_t rs2 = 0, uint32_t rs1 = 0)
     {
         return MakeIns_S(imm, rs2, rs1, 0b001, InsMnemonic::SH);
     }
 
-    static Ins MakeIns_SW(int32_t imm, uint32_t rs2, uint32_t rs1)
+    static Ins MakeIns_SW(int32_t imm = 0, uint32_t rs2 = 0, uint32_t rs1 = 0)
     {
         return MakeIns_S(imm, rs2, rs1, 0b010, InsMnemonic::SW);
     }
@@ -486,32 +491,34 @@ class Ins
         return Ins(ins, InsFormat::B, mnemonic);
     }
 
-    static Ins MakeIns_BEQ(int32_t imm, uint32_t rs2, uint32_t rs1)
+    static Ins MakeIns_BEQ(int32_t imm = 0, uint32_t rs2 = 0, uint32_t rs1 = 0)
     {
         return MakeIns_B(imm, rs2, rs1, 0b000, InsMnemonic::BEQ);
     }
 
-    static Ins MakeIns_BNE(int32_t imm, uint32_t rs2, uint32_t rs1)
+    static Ins MakeIns_BNE(int32_t imm = 0, uint32_t rs2 = 0, uint32_t rs1 = 0)
     {
         return MakeIns_B(imm, rs2, rs1, 0b001, InsMnemonic::BNE);
     }
 
-    static Ins MakeIns_BLT(int32_t imm, uint32_t rs2, uint32_t rs1)
+    static Ins MakeIns_BLT(int32_t imm = 0, uint32_t rs2 = 0, uint32_t rs1 = 0)
     {
         return MakeIns_B(imm, rs2, rs1, 0b100, InsMnemonic::BLT);
     }
 
-    static Ins MakeIns_BGE(int32_t imm, uint32_t rs2, uint32_t rs1)
+    static Ins MakeIns_BGE(int32_t imm = 0, uint32_t rs2 = 0, uint32_t rs1 = 0)
     {
         return MakeIns_B(imm, rs2, rs1, 0b101, InsMnemonic::BGE);
     }
 
-    static Ins MakeIns_BLTU(int32_t imm, uint32_t rs2, uint32_t rs1)
+    static Ins MakeIns_BLTU(int32_t imm = 0, uint32_t rs2 = 0,
+                            uint32_t rs1 = 0)
     {
         return MakeIns_B(imm, rs2, rs1, 0b110, InsMnemonic::BLTU);
     }
 
-    static Ins MakeIns_BGEU(int32_t imm, uint32_t rs2, uint32_t rs1)
+    static Ins MakeIns_BGEU(int32_t imm = 0, uint32_t rs2 = 0,
+                            uint32_t rs1 = 0)
     {
         return MakeIns_B(imm, rs2, rs1, 0b111, InsMnemonic::BGEU);
     }
@@ -534,17 +541,17 @@ class Ins
 
         ins = InsSetValueMask(ins, opcode, MASK_OPCODE, 0);
         ins = InsSetValueMask(ins, rd, MASK_RD, 7);
-        ins = InsSetValueMask(ins, imm_31_12, MASK_U_IMM_31_12, 12);
+        ins = InsSetValueMask(ins, imm_31_12, MASK_U_IMM_31_12, 0);
 
         return Ins(ins, InsFormat::U, mnemonic);
     }
 
-    static Ins MakeIns_LUI(int32_t imm, uint32_t rd)
+    static Ins MakeIns_LUI(int32_t imm = 0, uint32_t rd = 0)
     {
         return MakeIns_U(imm, rd, Ins_U_OPCODE::LUI, InsMnemonic::LUI);
     }
 
-    static Ins MakeIns_AUIPC(int32_t imm, uint32_t rd)
+    static Ins MakeIns_AUIPC(int32_t imm = 0, uint32_t rd = 0)
     {
         return MakeIns_U(imm, rd, Ins_U_OPCODE::AUIPC, InsMnemonic::AUIPC);
     }
@@ -575,7 +582,7 @@ class Ins
         return Ins(ins, InsFormat::J, mnemonic);
     }
 
-    static Ins MakeIns_JAL(int32_t imm, uint32_t rd)
+    static Ins MakeIns_JAL(int32_t imm = 0, uint32_t rd = 0)
     {
         return MakeIns_J(imm, rd, InsMnemonic::JAL);
     }
@@ -627,7 +634,7 @@ class Ins
         return ins | val;
     }
 
-    static int32_t ConvertNegativeEncoding(int32_t imm)
+    static int32_t ConvertNegativeEncoding(int32_t imm = 0)
     {
         return abs(imm) | ((imm < 0) ? MASK_MSB : 0x0);
     }
