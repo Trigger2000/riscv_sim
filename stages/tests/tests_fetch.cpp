@@ -5,32 +5,6 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
-TEST(FetchTestNoSignals, FetchInvalidIns)
-{
-    Imem imem({ Ins() });
-    StageFetch f{ imem };
-    RegisterWriteBackFetch reg_in;
-    SimulationSignals sigs;
-
-    ASSERT_EQ(reg_in.PC, 0);
-
-    EXPECT_DEATH({ f.run(&reg_in, &sigs); }, "");
-}
-
-TEST(FetchTestNoSignals, FetchInvalidPC)
-{
-    Imem imem({ Ins() });
-    StageFetch f{ imem };
-    RegisterWriteBackFetch reg_in;
-    SimulationSignals sigs;
-
-    ASSERT_EQ(reg_in.PC, 0);
-
-    reg_in.PC = 100;
-
-    EXPECT_DEATH({ f.run(&reg_in, &sigs); }, "");
-}
-
 TEST(FetchTestNoSignals, FetchSingleIns)
 {
     static const Ins ADD = Ins::MakeIns_ADD(2, 1, 0);
@@ -137,8 +111,6 @@ TEST(FetchTestSetSignals, PC_R_PC_DISP_Neg)
     sigs.PC_EX = reg_in.PC;
 
     RegisterFetchDecode reg_out = f.run(&reg_in, &sigs);
-    //  Ins Imem::Fetch(uint32_t): Assertion `pos < instructions_.size()'
-    //  failed
 
     ASSERT_EQ(reg_out.ins.GetInsRaw(), INS[10].GetInsRaw());
     ASSERT_EQ(reg_out.PC, 10 * INSTRUCTION_LENGTH);

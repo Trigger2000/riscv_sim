@@ -9,6 +9,44 @@
 class Ins
 {
   public:
+    static const uint32_t INS_WIDTH = 32;
+    static const uint32_t MASK_MSB = 0x80000000;
+
+    // common
+    static const uint32_t MASK_OPCODE = 0x0000007F;
+    static const uint32_t MASK_RD = 0x00000F80;
+    static const uint32_t MASK_RS1 = 0x000F8000;
+    static const uint32_t MASK_RS2 = 0x01F00000;
+
+    // R-type
+    static const uint32_t MASK_R_FUNCT3 = 0x00007000;
+    static const uint32_t MASK_R_FUNCT7 = 0xFE000000;
+
+    // I-type
+    static const uint32_t MASK_I_FUNCT3 = 0x00007000;
+    static const uint32_t MASK_I_IMM_11_0 = 0xFFF00000;
+
+    // S-type
+    static const uint32_t MASK_S_IMM_4_0 = 0x00000F80;
+    static const uint32_t MASK_S_FUNCT3 = 0x00007000;
+    static const uint32_t MASK_S_IMM_11_5 = 0xFE000000;
+
+    // B-type
+    static const uint32_t MASK_B_IMM_11 = 0x00000080;
+    static const uint32_t MASK_B_IMM_4_1 = 0x00000F00;
+    static const uint32_t MASK_B_FUNCT3 = 0x00007000;
+    static const uint32_t MASK_B_IMM_10_5 = 0x7E000000;
+    static const uint32_t MASK_B_IMM_12 = 0x80000000;
+
+    // U-type
+    static const uint32_t MASK_U_IMM_31_12 = 0xFFFFF000;
+
+    // J-type
+    static const uint32_t MASK_J_IMM_19_12 = 0x000FF000;
+    static const uint32_t MASK_J_IMM_11 = 0x00100000;
+    static const uint32_t MASK_J_IMM_10_1 = 0x7FE00000;
+    static const uint32_t MASK_J_IMM_20 = 0x80000000;
+
     enum class InsFormat
     {
         R,
@@ -17,7 +55,7 @@ class Ins
         B,
         U,
         J,
-        INVALID,
+        NOP,
     };
 
     enum class InsMnemonic
@@ -74,16 +112,22 @@ class Ins
         // J
         JAL,
 
-        INVALID,
+        // NOP
+        NOP,
     };
 
-    Ins() : ins_raw(0), fmt(InsFormat::INVALID), mnm(InsMnemonic::INVALID)
+    Ins() : ins_raw(0), fmt(InsFormat::NOP), mnm(InsMnemonic::NOP)
     {}
     ~Ins() = default;
 
     Ins(uint32_t bits, InsFormat format, InsMnemonic mnemonic)
         : ins_raw(bits), fmt(format), mnm(mnemonic)
     {}
+
+    bool IsNOP() const
+    {
+        return ((mnm == InsMnemonic::NOP) && (fmt == InsFormat::NOP));
+    }
 
     inline InsFormat GetInsFormat() const
     {
@@ -587,45 +631,12 @@ class Ins
         return MakeIns_J(imm, rd, InsMnemonic::JAL);
     }
 
+    static Ins MakeIns_NOP()
+    {
+        return Ins();
+    }
+
   private:
-    static const uint32_t INS_WIDTH = 32;
-    static const uint32_t MASK_MSB = 0x80000000;
-
-    // common
-    static const uint32_t MASK_OPCODE = 0x0000007F;
-    static const uint32_t MASK_RD = 0x00000F80;
-    static const uint32_t MASK_RS1 = 0x000F8000;
-    static const uint32_t MASK_RS2 = 0x01F00000;
-
-    // R-type
-    static const uint32_t MASK_R_FUNCT3 = 0x00007000;
-    static const uint32_t MASK_R_FUNCT7 = 0xFE000000;
-
-    // I-type
-    static const uint32_t MASK_I_FUNCT3 = 0x00007000;
-    static const uint32_t MASK_I_IMM_11_0 = 0xFFF00000;
-
-    // S-type
-    static const uint32_t MASK_S_IMM_4_0 = 0x00000F80;
-    static const uint32_t MASK_S_FUNCT3 = 0x00007000;
-    static const uint32_t MASK_S_IMM_11_5 = 0xFE000000;
-
-    // B-type
-    static const uint32_t MASK_B_IMM_11 = 0x00000080;
-    static const uint32_t MASK_B_IMM_4_1 = 0x00000F00;
-    static const uint32_t MASK_B_FUNCT3 = 0x00007000;
-    static const uint32_t MASK_B_IMM_10_5 = 0x7E000000;
-    static const uint32_t MASK_B_IMM_12 = 0x80000000;
-
-    // U-type
-    static const uint32_t MASK_U_IMM_31_12 = 0xFFFFF000;
-
-    // J-type
-    static const uint32_t MASK_J_IMM_19_12 = 0x000FF000;
-    static const uint32_t MASK_J_IMM_11 = 0x00100000;
-    static const uint32_t MASK_J_IMM_10_1 = 0x7FE00000;
-    static const uint32_t MASK_J_IMM_20 = 0x80000000;
-
     static inline uint32_t InsSetValueMask(uint32_t ins, uint32_t val,
                                            uint32_t mask, size_t offset)
     {

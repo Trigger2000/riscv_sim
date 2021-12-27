@@ -27,6 +27,8 @@ struct SimulationSignals
     // from execute
     int32_t PC_DISP = 0;
     uint32_t PC_EX = 0;
+    uint32_t A1_EX = 0;
+    uint32_t A2_EX = 0;
 
     // from memory
     int32_t BP_MEM = 0;
@@ -37,6 +39,7 @@ struct SimulationSignals
     uint32_t WB_WE = 0;
     uint32_t WB_A = 0;
     uint32_t HU_MEM_RD = 0;
+    uint32_t HU_WB_RD = 0;
 
     // from HU
     // FIXME: probably the same thing

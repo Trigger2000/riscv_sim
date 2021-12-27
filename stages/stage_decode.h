@@ -26,8 +26,22 @@ struct StageDecode
     {
         assert(signals != nullptr);
 
-        RegisterDecodeExecute output_reg;
+        if (signals->WB_WE != 0) {
+            regfile_.SetD(signals->WB_A, signals->WB_D);
+        }
+
+        RegisterDecodeExecute output_reg{};
+
+        if (signals->PC_R == 1 || input_reg.PC_R == 1) {
+            output_reg.V_EX = 1;
+        }
+
+        if (input_reg.ins.IsNOP()) {
+            return output_reg;
+        }
+
         Ins instr_after_fetch = input_reg.ins;
+        output_reg.ins = instr_after_fetch;
 
         uint32_t rs1 = 0;
         uint32_t rs2 = 0;
@@ -37,21 +51,14 @@ struct StageDecode
         output_reg.D1 = regfile_.GetD(rs1);
         output_reg.D2 = regfile_.GetD(rs2);
 
-        if (signals->WB_WE != 0) {
-            regfile_.SetD(signals->WB_A, signals->WB_D);
-        }
-
-        // maybe not needed
+        // may not be needed
         output_reg.sign_bit =
             SignExtendSignBit(instr_after_fetch.GetImmSign());
 
         output_reg.CONTROL_EX = RunControlUnit(instr_after_fetch);
         output_reg.PC_EX = input_reg.PC;
 
-        if (signals->PC_R == 1 || input_reg.PC_R == 1) {
-            output_reg.V_EX = 1;
-        }
-
+        // TODO: remove these fields from tests and remove them from here
         instr_after_fetch.GetRd(&output_reg.WB_A);
         instr_after_fetch.GetImm(&output_reg.imm);
 
@@ -73,6 +80,7 @@ struct StageDecode
         // set signals here
         output.ALUOP = instr.GetInsMnemonic();
         output.ALU_SRC2 = (instr.GetInsFormat() != Ins::InsFormat::R) ? 1 : 0;
+        output.ALU_FMT = instr.GetInsFormat();
 
         return output;
     }
