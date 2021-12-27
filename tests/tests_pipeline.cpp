@@ -87,6 +87,27 @@ TEST(TestsPipeline, TestADD_set_regfile)
     ASSERT_EQ(s.sd.GetRegfileData(3), 25);
 }
 
+TEST(TestsPipeline, TestADDI)
+{
+    static const std::vector<Ins> INS = { Ins::MakeIns_ADDI(50, 1, 2) };
+
+    Simulation s{};
+
+    s.Init(INS);
+
+    s.sd.SetRegfileData(1, 15);
+
+    s.Iterate();
+    s.Iterate();
+    s.Iterate();
+    s.Iterate();
+    s.Iterate();
+    s.Iterate();
+    s.Iterate();
+
+    ASSERT_EQ(s.sd.GetRegfileData(2), 65);
+}
+
 // TEST(TestsPipeline, TestSW)
 // {
 //     static const std::vector<Ins> INS = { Ins::MakeIns_SW(0x8, 0, 1) };
