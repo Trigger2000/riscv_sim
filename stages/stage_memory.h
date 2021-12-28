@@ -15,6 +15,14 @@ struct StageMemory
     RegisterMemoryWriteback run(const RegisterExecuteMemory& input_reg,
                                 SimulationSignals* signals)
     {
+        assert(signals != nullptr);
+
+        // std::cout << "[MEM] PB_MEM " << signals->BP_MEM << "\n";
+        // std::cout << "[MEM] HU_MEM_RD " << signals->HU_MEM_RD << "\n";
+        // std::cout << "[MEM] A " << input_reg.alu_res << "\n";
+        // std::cout << "[MEM] WB_A " << input_reg.WB_A << "\n";
+        // std::cout << "[MEM] WB_WE " << input_reg.WB_WE << "\n";
+        // std::cout << "[MEM] WB_WD " << input_reg.WD << "\n";
 
         signals->BP_MEM = input_reg.alu_res;
         signals->HU_MEM_RD = input_reg.WB_A;

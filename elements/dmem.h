@@ -40,7 +40,9 @@ struct Dmem
 
     int32_t read_data(uint32_t A, uint32_t width)
     {
-        assert(A < DMEM_SIZE);
+        // FIXME: dirty hack
+        A = A % DMEM_SIZE;
+
         int32_t result = 0;
 
         switch (width) {

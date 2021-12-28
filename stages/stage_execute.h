@@ -15,11 +15,12 @@ struct StageExecute
     RegisterExecuteMemory run(const RegisterDecodeExecute& input_reg,
                               SimulationSignals* signals)
     {
+        assert(signals != nullptr);
 
         int32_t imm = 0;
         input_reg.ins.GetImm(&imm);
-        input_reg.ins.GetRs1(&(signals->A1_EX));
-        input_reg.ins.GetRs2(&(signals->A2_EX));
+        // input_reg.ins.GetRs1(&(signals->A1_EX));
+        // input_reg.ins.GetRs2(&(signals->A2_EX));
 
         signals->PC_DISP = static_cast<uint32_t>(imm);
         signals->PC_EX = input_reg.PC_EX;
@@ -29,6 +30,19 @@ struct StageExecute
 
         int32_t RS2V = Mux3<int32_t>(input_reg.D2, signals->BP_MEM,
                                      signals->BP_WB, signals->HU_RS2);
+
+        // std::cout << "[EXECUTE] D1 " << input_reg.D1 << "\n";
+        // std::cout << "[EXECUTE] D2 " << input_reg.D2 << "\n";
+        // std::cout << "[EXECUTE] A1_EX " << signals->A1_D << "\n";
+        // std::cout << "[EXECUTE] A2_EX " << signals->A2_D << "\n";
+        // std::cout << "[EXECUTE] PC_DISP " << signals->PC_DISP << "\n";
+        // std::cout << "[EXECUTE] PC_EX " << signals->PC_EX << "\n";
+        // std::cout << "[EXECUTE] A1_EX " << signals->A1_D << "\n";
+        // std::cout << "[EXECUTE] RS1V " << RS1V << "\n";
+        // std::cout << "[EXECUTE] RS2V " << RS2V << "\n";
+        // std::cout << "[EXECUTE] IMM " << imm << "\n";
+        // std::cout << "[EXECUTE] HU_RS1 " << signals->HU_RS1 << "\n";
+        // std::cout << "[EXECUTE] HU_RS2 " << signals->HU_RS2 << "\n";
 
         RegisterExecuteMemory output_reg{};
 
@@ -46,6 +60,8 @@ struct StageExecute
 
         output_reg.alu_res =
             RunAlu(RS1V, alu_src2, input_reg.CONTROL_EX.ALUOP);
+
+        // std::cout << "[EXECUTE] ALU_RES " << output_reg.alu_res << "\n";
 
         RunWEGen(input_reg.CONTROL_EX, input_reg.V_EX, &output_reg.WB_WE,
                  &output_reg.MEM_WE);

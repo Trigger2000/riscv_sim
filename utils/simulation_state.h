@@ -23,12 +23,14 @@ struct SimulationSignals
     // from fetch
 
     // from decode
+    uint32_t A1_D = 0;
+    uint32_t A2_D = 0;
 
     // from execute
     int32_t PC_DISP = 0;
     uint32_t PC_EX = 0;
-    uint32_t A1_EX = 0;
-    uint32_t A2_EX = 0;
+    // uint32_t A1_EX = 0;
+    // uint32_t A2_EX = 0;
 
     // from memory
     int32_t BP_MEM = 0;
@@ -44,6 +46,7 @@ struct SimulationSignals
     // from HU
     // FIXME: probably the same thing
     uint32_t HU_PC_REDIRECT = 0;
+    uint32_t HU_STALL = 0;
     uint32_t PC_R = 0;
     uint32_t HU_RS1 = 0;
     uint32_t HU_RS2 = 0;

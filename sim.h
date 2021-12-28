@@ -47,7 +47,11 @@ struct Simulation
         RunHazardUnit(&state_, &sigs_);
         state_.reg_decode_exec = sd.run(state_.reg_fetch_decode, &sigs_);
         RunHazardUnit(&state_, &sigs_);
-        state_.reg_fetch_decode = sf.run(&state_.reg_wb_fetch, &sigs_);
+        if (!sigs_.HU_STALL) {
+            state_.reg_fetch_decode = sf.run(&state_.reg_wb_fetch, &sigs_);
+        } else {
+            sf.run(&state_.reg_wb_fetch, &sigs_);
+        }
     }
 
     bool run(std::vector<Ins> ins)

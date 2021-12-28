@@ -34,7 +34,9 @@ struct StageFetch
         int32_t pc_disp = Mux2<int32_t>(INSTRUCTION_LENGTH, signals->PC_DISP,
                                         static_cast<int32_t>(signals->PC_R));
 
-        input_reg->PC = AluFetch(start_pc, pc_disp);
+        if (!signals->HU_STALL) {
+            input_reg->PC = AluFetch(start_pc, pc_disp);
+        }
 
         return output_reg;
     }
