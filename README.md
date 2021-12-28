@@ -1,4 +1,4 @@
-# RiscV uarch simulator
+# RiscV simulator
 
 ### Build and run
 
