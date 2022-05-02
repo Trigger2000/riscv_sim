@@ -61,6 +61,7 @@ struct StageDecode
 
         signals->A1_D = rs1;
         signals->A2_D = rs2;
+        signals->PC_DE = input_reg.PC_DE;
 
         // std::cout << "[DECODE] A1 " << rs1 << "\n";
         // std::cout << "[DECODE] A2 " << rs2 << "\n";
@@ -73,11 +74,8 @@ struct StageDecode
             SignExtendSignBit(instr_after_fetch.GetImmSign());
 
         output_reg.CONTROL_EX = RunControlUnit(instr_after_fetch);
-        output_reg.PC_EX = input_reg.PC;
 
-        // TODO: remove these fields from tests and remove them from here
-        instr_after_fetch.GetRd(&output_reg.WB_A);
-        instr_after_fetch.GetImm(&output_reg.imm);
+        output_reg.ins = instr_after_fetch;
 
         return output_reg;
     }

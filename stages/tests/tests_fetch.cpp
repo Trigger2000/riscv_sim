@@ -18,7 +18,7 @@ TEST(FetchTestNoSignals, FetchSingleIns)
     RegisterFetchDecode reg_out = f.run(&reg_in, &sigs);
 
     ASSERT_EQ(reg_out.ins.GetInsRaw(), ADD.GetInsRaw());
-    ASSERT_EQ(reg_out.PC, 0);
+    ASSERT_EQ(reg_out.PC_DE, 0);
     ASSERT_EQ(reg_out.PC_R, 0);
     ASSERT_EQ(reg_in.PC, 1 * INSTRUCTION_LENGTH);
 }
@@ -41,7 +41,7 @@ TEST(FetchTestNoSignals, FetchManyIns)
     for (size_t i = 0; i < INS.size(); ++i) {
         RegisterFetchDecode reg_out = f.run(&reg_in, &sigs);
         ASSERT_EQ(reg_out.ins.GetInsRaw(), INS[i].GetInsRaw());
-        ASSERT_EQ(reg_out.PC, i * INSTRUCTION_LENGTH);
+        ASSERT_EQ(reg_out.PC_DE, i * INSTRUCTION_LENGTH);
         ASSERT_EQ(reg_out.PC_R, 0);
         ASSERT_EQ(reg_in.PC, (i + 1) * INSTRUCTION_LENGTH);
     }
@@ -61,7 +61,7 @@ TEST(FetchTestSetSignals, PC_R)
     RegisterFetchDecode reg_out = f.run(&reg_in, &sigs);
 
     ASSERT_EQ(reg_out.ins.GetInsRaw(), ADD.GetInsRaw());
-    ASSERT_EQ(reg_out.PC, 0);
+    ASSERT_EQ(reg_out.PC_DE, 0);
     ASSERT_EQ(reg_out.PC_R, 1);
     ASSERT_EQ(reg_in.PC, 0);
 }
@@ -81,7 +81,7 @@ TEST(FetchTestSetSignals, PC_R_PC_DISP)
     RegisterFetchDecode reg_out = f.run(&reg_in, &sigs);
 
     ASSERT_EQ(reg_out.ins.GetInsRaw(), ADD.GetInsRaw());
-    ASSERT_EQ(reg_out.PC, 0);
+    ASSERT_EQ(reg_out.PC_DE, 0);
     ASSERT_EQ(reg_out.PC_R, 1);
     ASSERT_EQ(reg_in.PC, 4 * INSTRUCTION_LENGTH);
 }
@@ -108,17 +108,17 @@ TEST(FetchTestSetSignals, PC_R_PC_DISP_Neg)
     ASSERT_EQ(reg_in.PC, 0);
 
     reg_in.PC = 10 * INSTRUCTION_LENGTH;
-    sigs.PC_EX = reg_in.PC;
+    sigs.PC_DE = reg_in.PC;
 
     RegisterFetchDecode reg_out = f.run(&reg_in, &sigs);
 
     ASSERT_EQ(reg_out.ins.GetInsRaw(), INS[10].GetInsRaw());
-    ASSERT_EQ(reg_out.PC, 10 * INSTRUCTION_LENGTH);
+    ASSERT_EQ(reg_out.PC_DE, 10 * INSTRUCTION_LENGTH);
     ASSERT_EQ(reg_out.PC_R, 1);
     ASSERT_EQ(reg_in.PC, 6 * INSTRUCTION_LENGTH);
 }
 
-TEST(FetchTestSetSignals, PC_R_PC_DISP_PC_EX)
+TEST(FetchTestSetSignals, PC_R_PC_DISP_PC_DE)
 {
     static const Ins ADD = Ins::MakeIns_ADD(2, 1, 0);
     Imem imem({ ADD });
@@ -126,7 +126,7 @@ TEST(FetchTestSetSignals, PC_R_PC_DISP_PC_EX)
     RegisterWriteBackFetch reg_in;
     SimulationSignals sigs;
     sigs.PC_R = 1;
-    sigs.PC_EX = 3 * INSTRUCTION_LENGTH;
+    sigs.PC_DE = 3 * INSTRUCTION_LENGTH;
     sigs.PC_DISP = 4 * INSTRUCTION_LENGTH;
 
     ASSERT_EQ(reg_in.PC, 0);
@@ -134,12 +134,12 @@ TEST(FetchTestSetSignals, PC_R_PC_DISP_PC_EX)
     RegisterFetchDecode reg_out = f.run(&reg_in, &sigs);
 
     ASSERT_EQ(reg_out.ins.GetInsRaw(), ADD.GetInsRaw());
-    ASSERT_EQ(reg_out.PC, 0);
+    ASSERT_EQ(reg_out.PC_DE, 0);
     ASSERT_EQ(reg_out.PC_R, 1);
     ASSERT_EQ(reg_in.PC, 7 * INSTRUCTION_LENGTH);
 }
 
-TEST(FetchTestSetSignals, PC_R_PC_DISP_PC_EX_Neg)
+TEST(FetchTestSetSignals, PC_R_PC_DISP_PC_DE_Neg)
 {
     static const Ins ADD = Ins::MakeIns_ADD(2, 1, 0);
     Imem imem({ ADD });
@@ -147,7 +147,7 @@ TEST(FetchTestSetSignals, PC_R_PC_DISP_PC_EX_Neg)
     RegisterWriteBackFetch reg_in;
     SimulationSignals sigs;
     sigs.PC_R = 1;
-    sigs.PC_EX = 3 * INSTRUCTION_LENGTH;
+    sigs.PC_DE = 3 * INSTRUCTION_LENGTH;
     sigs.PC_DISP = -1 * INSTRUCTION_LENGTH;
 
     ASSERT_EQ(reg_in.PC, 0);
@@ -155,7 +155,7 @@ TEST(FetchTestSetSignals, PC_R_PC_DISP_PC_EX_Neg)
     RegisterFetchDecode reg_out = f.run(&reg_in, &sigs);
 
     ASSERT_EQ(reg_out.ins.GetInsRaw(), ADD.GetInsRaw());
-    ASSERT_EQ(reg_out.PC, 0);
+    ASSERT_EQ(reg_out.PC_DE, 0);
     ASSERT_EQ(reg_out.PC_R, 1);
     ASSERT_EQ(reg_in.PC, 2 * INSTRUCTION_LENGTH);
 }

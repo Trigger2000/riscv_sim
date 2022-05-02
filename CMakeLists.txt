@@ -22,10 +22,13 @@ target_link_libraries(sim elements)
 
 set(TEST_FOLDER ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
-set(TESTS_PIPELINE 
-    ${TEST_FOLDER}/tests_pipeline.cpp
+set(TESTS 
+    ${TEST_FOLDER}/tests_control_flow_conflict.cpp
+    ${TEST_FOLDER}/tests_data_flow_conflict.cpp
+    ${TEST_FOLDER}/tests_single_op.cpp
+    ${TEST_FOLDER}/tests_sequence.cpp
     )
 
-add_executable(tests_pipeline ${TESTS_PIPELINE})
-target_link_libraries(tests_pipeline utils stages elements ${GTEST_LIBRARIES} pthread)
-target_include_directories(tests_pipeline PRIVATE ${PROJECT_SOURCE_DIR})
+add_executable(tests ${TESTS})
+target_link_libraries(tests utils stages elements ${GTEST_LIBRARIES} pthread)
+target_include_directories(tests PRIVATE ${PROJECT_SOURCE_DIR})

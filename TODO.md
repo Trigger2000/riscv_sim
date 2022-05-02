@@ -2,20 +2,12 @@
 
 - cover LUI with tests
 
+- $0 always holds 0
+
 - Supported instructions
-  R except
-  SLL,
-  SLT,
-  SLTU,
-  SRL,
-  SRA,
+  R
 
   I except
-  SLTI,
-  SLTUI,
-  SLLI,
-  SRLI,
-  SRAI,
   LBU,
   LHU,
   JALR,

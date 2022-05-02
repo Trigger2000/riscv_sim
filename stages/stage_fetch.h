@@ -28,9 +28,9 @@ struct StageFetch
         output_reg.ins = ins_mem_.Fetch(pc);
 
         output_reg.PC_R = signals->PC_R;
-        output_reg.PC = pc;
+        output_reg.PC_DE = pc;
 
-        uint32_t start_pc = Mux2<uint32_t>(pc, signals->PC_EX, signals->PC_R);
+        uint32_t start_pc = Mux2<uint32_t>(pc, signals->PC_DE, signals->PC_R);
         int32_t pc_disp = Mux2<int32_t>(INSTRUCTION_LENGTH, signals->PC_DISP,
                                         static_cast<int32_t>(signals->PC_R));
 

@@ -23,7 +23,6 @@ struct StageExecute
         // input_reg.ins.GetRs2(&(signals->A2_EX));
 
         signals->PC_DISP = static_cast<uint32_t>(imm);
-        signals->PC_EX = input_reg.PC_EX;
 
         int32_t RS1V = Mux3<int32_t>(input_reg.D1, signals->BP_MEM,
                                      signals->BP_WB, signals->HU_RS1);
@@ -36,7 +35,6 @@ struct StageExecute
         // std::cout << "[EXECUTE] A1_EX " << signals->A1_D << "\n";
         // std::cout << "[EXECUTE] A2_EX " << signals->A2_D << "\n";
         // std::cout << "[EXECUTE] PC_DISP " << signals->PC_DISP << "\n";
-        // std::cout << "[EXECUTE] PC_EX " << signals->PC_EX << "\n";
         // std::cout << "[EXECUTE] A1_EX " << signals->A1_D << "\n";
         // std::cout << "[EXECUTE] RS1V " << RS1V << "\n";
         // std::cout << "[EXECUTE] RS2V " << RS2V << "\n";
@@ -115,18 +113,32 @@ struct StageExecute
         case Ins::InsMnemonic::AND:
         case Ins::InsMnemonic::ANDI:
             return op1 & op2;
+        case Ins::InsMnemonic::SLL:
+        case Ins::InsMnemonic::SLLI:
+            assert(op1 >= 0); // otherwise UB in C++
+            return op1 << op2;
+        case Ins::InsMnemonic::SRL:
+        case Ins::InsMnemonic::SRA:
+        case Ins::InsMnemonic::SRLI:
+        case Ins::InsMnemonic::SRAI:
+            return op1 >> op2;
+        case Ins::InsMnemonic::SLT:
+        case Ins::InsMnemonic::SLTI:
+        case Ins::InsMnemonic::SLTU: // SLTU and SLTUI compares unsigned values
+        case Ins::InsMnemonic::SLTUI:
+            return op1 < op2 ? 1 : 0;
         default:
             return 0;
         }
     }
 
-    void RunWEGen(RegisterDecodeExecute::ControlEx control_ex, uint32_t v_ex,
-                  uint32_t* wb_we, uint32_t* mem_we)
+    void RunWEGen(RegisterDecodeExecute::ControlEx control_ex,
+                  uint32_t v_ex [[maybe_unused]], uint32_t* wb_we,
+                  uint32_t* mem_we)
     {
-        std::cerr << "[V_EX]" << v_ex << "\n";
-
         *mem_we = 0;
         *wb_we = 0;
+
         if (control_ex.ALU_FMT == Ins::InsFormat::S) {
             *mem_we = 1;
         }

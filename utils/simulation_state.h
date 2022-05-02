@@ -25,10 +25,10 @@ struct SimulationSignals
     // from decode
     uint32_t A1_D = 0;
     uint32_t A2_D = 0;
+    uint32_t PC_DE = 0;
 
     // from execute
     int32_t PC_DISP = 0;
-    uint32_t PC_EX = 0;
     // uint32_t A1_EX = 0;
     // uint32_t A2_EX = 0;
 

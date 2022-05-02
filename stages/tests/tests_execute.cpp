@@ -23,10 +23,12 @@ TEST(TestsExecute, TestADD)
     reg_in.D1 = 10;
     reg_in.D2 = 13;
     reg_in.sign_bit = 0xFFFFFFFF; // shouldn't affect
-    reg_in.PC_EX = 0;
     reg_in.V_EX = 0;
-    reg_in.imm = 100; // shouldn't affect
-    reg_in.WB_A = 11;
+    reg_in.ins = Ins::MakeIns_ADD(0, 0, 11); // only 11 should affect
+    int32_t imm = 0;
+    reg_in.ins.GetImm(&imm);
+    uint32_t rd = 0;
+    reg_in.ins.GetRd(&rd);
 
     StageExecute se{};
 
@@ -37,8 +39,8 @@ TEST(TestsExecute, TestADD)
     ASSERT_EQ(reg_out.WB_selector, 1);
     ASSERT_EQ(reg_out.MEM_WE, 0);
     ASSERT_EQ(reg_out.WB_WE, 1);
-    ASSERT_EQ(reg_out.WB_A, reg_in.WB_A);
-    ASSERT_EQ(reg_out.mem_width, 0);
+    ASSERT_EQ(reg_out.WB_A, rd);
+    ASSERT_EQ(reg_out.mem_width, 8);
 }
 
 TEST(TestsExecute, TestADD_Neg)
@@ -57,10 +59,12 @@ TEST(TestsExecute, TestADD_Neg)
     reg_in.D1 = 10;
     reg_in.D2 = -13;
     reg_in.sign_bit = 0xFFFFFFFF; // shouldn't affect
-    reg_in.PC_EX = 0;
     reg_in.V_EX = 0;
-    reg_in.imm = 100; // shouldn't affect
-    reg_in.WB_A = 11;
+    reg_in.ins = Ins::MakeIns_ADD(0, 0, 11); // only 11 should affect
+    int32_t imm = 0;
+    reg_in.ins.GetImm(&imm);
+    uint32_t rd = 0;
+    reg_in.ins.GetRd(&rd);
 
     StageExecute se{};
 
@@ -71,8 +75,8 @@ TEST(TestsExecute, TestADD_Neg)
     ASSERT_EQ(reg_out.WB_selector, 1);
     ASSERT_EQ(reg_out.MEM_WE, 0);
     ASSERT_EQ(reg_out.WB_WE, 1);
-    ASSERT_EQ(reg_out.WB_A, reg_in.WB_A);
-    ASSERT_EQ(reg_out.mem_width, 0);
+    ASSERT_EQ(reg_out.WB_A, rd);
+    ASSERT_EQ(reg_out.mem_width, 8);
 }
 
 // I
@@ -95,22 +99,25 @@ TEST(TestsExecute, TestADDI)
     reg_in.D1 = 10;
     reg_in.D2 = 13;               // shouldn't affect
     reg_in.sign_bit = 0xFFFFFFFF; // shouldn't affect
-    reg_in.PC_EX = 0;
     reg_in.V_EX = 0;
-    reg_in.imm = 100;
-    reg_in.WB_A = 11;
+    reg_in.ins =
+        Ins::MakeIns_ADDI(100, 0, 11); // only 100 and 11 should affect
+    int32_t imm = 0;
+    reg_in.ins.GetImm(&imm);
+    uint32_t rd = 0;
+    reg_in.ins.GetRd(&rd);
 
     StageExecute se{};
 
     auto reg_out = se.run(reg_in, &sigs);
 
     ASSERT_EQ(reg_out.WD, reg_in.D2);
-    ASSERT_EQ(reg_out.alu_res, reg_in.D1 + reg_in.imm);
+    ASSERT_EQ(reg_out.alu_res, reg_in.D1 + imm);
     ASSERT_EQ(reg_out.WB_selector, 1);
     ASSERT_EQ(reg_out.MEM_WE, 0);
     ASSERT_EQ(reg_out.WB_WE, 1);
-    ASSERT_EQ(reg_out.WB_A, reg_in.WB_A);
-    ASSERT_EQ(reg_out.mem_width, 0);
+    ASSERT_EQ(reg_out.WB_A, rd);
+    ASSERT_EQ(reg_out.mem_width, 8);
 }
 
 TEST(TestsExecute, TestADDI_Neg)
@@ -129,22 +136,25 @@ TEST(TestsExecute, TestADDI_Neg)
     reg_in.D1 = 10;
     reg_in.D2 = 13;               // shouldn't affect
     reg_in.sign_bit = 0xFFFFFFFF; // shouldn't affect
-    reg_in.PC_EX = 0;
     reg_in.V_EX = 0;
-    reg_in.imm = -100;
-    reg_in.WB_A = 11;
+    reg_in.ins =
+        Ins::MakeIns_ADDI(-100, 0, 11); // only -100 and 11 should affect
+    int32_t imm = 0;
+    reg_in.ins.GetImm(&imm);
+    uint32_t rd = 0;
+    reg_in.ins.GetRd(&rd);
 
     StageExecute se{};
 
     auto reg_out = se.run(reg_in, &sigs);
 
     ASSERT_EQ(reg_out.WD, reg_in.D2);
-    ASSERT_EQ(reg_out.alu_res, reg_in.D1 + reg_in.imm);
+    ASSERT_EQ(reg_out.alu_res, reg_in.D1 + imm);
     ASSERT_EQ(reg_out.WB_selector, 1);
     ASSERT_EQ(reg_out.MEM_WE, 0);
     ASSERT_EQ(reg_out.WB_WE, 1);
-    ASSERT_EQ(reg_out.WB_A, reg_in.WB_A);
-    ASSERT_EQ(reg_out.mem_width, 0);
+    ASSERT_EQ(reg_out.WB_A, rd);
+    ASSERT_EQ(reg_out.mem_width, 8);
 }
 
 // LOAD
@@ -165,21 +175,23 @@ TEST(TestsExecute, TestLB)
     reg_in.D1 = 10;
     reg_in.D2 = 13;               // shouldn't affect
     reg_in.sign_bit = 0xFFFFFFFF; // shouldn't affect
-    reg_in.PC_EX = 0;
     reg_in.V_EX = 0;
-    reg_in.imm = 20;
-    reg_in.WB_A = 11;
+    reg_in.ins = Ins::MakeIns_LB(20, 0, 11); // only 20 and 11 should affect
+    int32_t imm = 0;
+    reg_in.ins.GetImm(&imm);
+    uint32_t rd = 0;
+    reg_in.ins.GetRd(&rd);
 
     StageExecute se{};
 
     auto reg_out = se.run(reg_in, &sigs);
 
     ASSERT_EQ(reg_out.WD, reg_in.D2);
-    ASSERT_EQ(reg_out.alu_res, reg_in.D1 + reg_in.imm);
+    ASSERT_EQ(reg_out.alu_res, reg_in.D1 + imm);
     ASSERT_EQ(reg_out.WB_selector, 0);
     ASSERT_EQ(reg_out.MEM_WE, 0);
     ASSERT_EQ(reg_out.WB_WE, 1);
-    ASSERT_EQ(reg_out.WB_A, reg_in.WB_A);
+    ASSERT_EQ(reg_out.WB_A, rd);
     ASSERT_EQ(reg_out.mem_width, 8);
 }
 
@@ -199,21 +211,23 @@ TEST(TestsExecute, TestLB_Neg)
     reg_in.D1 = 10;
     reg_in.D2 = 13;               // shouldn't affect
     reg_in.sign_bit = 0xFFFFFFFF; // shouldn't affect
-    reg_in.PC_EX = 0;
     reg_in.V_EX = 0;
-    reg_in.imm = -20;
-    reg_in.WB_A = 11;
+    reg_in.ins = Ins::MakeIns_LB(-20, 0, 11); // only -20 and 11 should affect
+    int32_t imm = 0;
+    reg_in.ins.GetImm(&imm);
+    uint32_t rd = 0;
+    reg_in.ins.GetRd(&rd);
 
     StageExecute se{};
 
     auto reg_out = se.run(reg_in, &sigs);
 
     ASSERT_EQ(reg_out.WD, reg_in.D2);
-    ASSERT_EQ(reg_out.alu_res, reg_in.D1 + reg_in.imm);
+    ASSERT_EQ(reg_out.alu_res, reg_in.D1 + imm);
     ASSERT_EQ(reg_out.WB_selector, 0);
     ASSERT_EQ(reg_out.MEM_WE, 0);
     ASSERT_EQ(reg_out.WB_WE, 1);
-    ASSERT_EQ(reg_out.WB_A, reg_in.WB_A);
+    ASSERT_EQ(reg_out.WB_A, rd);
     ASSERT_EQ(reg_out.mem_width, 8);
 }
 
@@ -237,21 +251,23 @@ TEST(TestsExecute, TestSB)
     reg_in.D1 = 40; // adr
     reg_in.D2 = 10; // data
     reg_in.sign_bit = 0;
-    reg_in.PC_EX = 0;
     reg_in.V_EX = 0;
-    reg_in.imm = -20; // offset
-    reg_in.WB_A = 31;
+    reg_in.ins = Ins::MakeIns_SB(-20, 0, 0); // only -20 should affect
+    int32_t imm = 0;
+    reg_in.ins.GetImm(&imm);
+    uint32_t rd = 0;
+    reg_in.ins.GetRd(&rd);
 
     StageExecute se{};
 
     auto reg_out = se.run(reg_in, &sigs);
 
     ASSERT_EQ(reg_out.WD, reg_in.D2);
-    ASSERT_EQ(reg_out.alu_res, reg_in.D1 + reg_in.imm);
+    ASSERT_EQ(reg_out.alu_res, reg_in.D1 + imm);
     ASSERT_EQ(reg_out.WB_selector, 1);
     ASSERT_EQ(reg_out.MEM_WE, 1);
     ASSERT_EQ(reg_out.WB_WE, 0);
-    ASSERT_EQ(reg_out.WB_A, reg_in.WB_A);
+    ASSERT_EQ(reg_out.WB_A, rd);
     ASSERT_EQ(reg_out.mem_width, 8);
 }
 
@@ -271,21 +287,23 @@ TEST(TestsExecute, TestSB_Neg)
     reg_in.D1 = 40; // adr
     reg_in.D2 = 10; // data
     reg_in.sign_bit = 0;
-    reg_in.PC_EX = 0;
     reg_in.V_EX = 0;
-    reg_in.imm = 20; // offset
-    reg_in.WB_A = 31;
+    reg_in.ins = Ins::MakeIns_SB(20, 0, 0); // only 20 should affect
+    int32_t imm = 0;
+    reg_in.ins.GetImm(&imm);
+    uint32_t rd = 0;
+    reg_in.ins.GetRd(&rd);
 
     StageExecute se{};
 
     auto reg_out = se.run(reg_in, &sigs);
 
     ASSERT_EQ(reg_out.WD, reg_in.D2);
-    ASSERT_EQ(reg_out.alu_res, reg_in.D1 + reg_in.imm);
+    ASSERT_EQ(reg_out.alu_res, reg_in.D1 + imm);
     ASSERT_EQ(reg_out.WB_selector, 1);
     ASSERT_EQ(reg_out.MEM_WE, 1);
     ASSERT_EQ(reg_out.WB_WE, 0);
-    ASSERT_EQ(reg_out.WB_A, reg_in.WB_A);
+    ASSERT_EQ(reg_out.WB_A, rd);
     ASSERT_EQ(reg_out.mem_width, 8);
 }
 
@@ -305,10 +323,10 @@ TEST(TestsExecute, TestSB_Neg)
 //     reg_in.D1 = 0;
 //     reg_in.D2 = 0;
 //     reg_in.sign_bit = 0;
-//     reg_in.PC_EX = 0;
 //     reg_in.V_EX = 0;
 //     reg_in.imm = 0;
 //     reg_in.WB_A = 0;
+//     reg_in.ins = Ins::MakeIns_ADD();
 
 //     StageExecute se{};
 
@@ -338,10 +356,10 @@ TEST(TestsExecute, TestSB_Neg)
 //     reg_in.D1 = 0;
 //     reg_in.D2 = 0;
 //     reg_in.sign_bit = 0;
-//     reg_in.PC_EX = 0;
 //     reg_in.V_EX = 0;
 //     reg_in.imm = 0;
 //     reg_in.WB_A = 0;
+//     reg_in.ins = Ins::MakeIns_ADD();
 
 //     StageExecute se{};
 
@@ -371,10 +389,10 @@ TEST(TestsExecute, TestSB_Neg)
 //     reg_in.D1 = 0;
 //     reg_in.D2 = 0;
 //     reg_in.sign_bit = 0;
-//     reg_in.PC_EX = 0;
 //     reg_in.V_EX = 0;
 //     reg_in.imm = 0;
 //     reg_in.WB_A = 0;
+//     reg_in.ins = Ins::MakeIns_ADD();
 
 //     StageExecute se{};
 

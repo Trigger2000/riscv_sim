@@ -24,10 +24,10 @@ TEST(TestsDecodeNoSignal, TestOutputR)
 
         ASSERT_EQ(reg_out.D1, i + 1);
         ASSERT_EQ(reg_out.D2, i);
-        ASSERT_EQ(reg_out.PC_EX, 0);
         ASSERT_EQ(reg_out.V_EX, 0);
-        ASSERT_EQ(reg_out.WB_A, 13);
-        ASSERT_EQ(reg_out.imm, 0);
+        // TODO change to instr comparison
+        // ASSERT_EQ(reg_out.WB_A, 13);
+        // ASSERT_EQ(reg_out.imm, 0);
         ASSERT_EQ(reg_out.sign_bit, 0);
         ASSERT_EQ(reg_out.CONTROL_EX.ALU_SRC2, 0);
         ASSERT_EQ(reg_out.CONTROL_EX.ALUOP, Ins::InsMnemonic::ADD);
@@ -54,10 +54,10 @@ TEST(TestsDecodeNoSignal, TestOutputI)
 
         ASSERT_EQ(reg_out.D1, i + 1);
         ASSERT_EQ(reg_out.D2, 0);
-        ASSERT_EQ(reg_out.PC_EX, 0);
         ASSERT_EQ(reg_out.V_EX, 0);
-        ASSERT_EQ(reg_out.WB_A, 13);
-        ASSERT_EQ(reg_out.imm, i * ((i % 2) ? 1 : -1));
+        // TODO change to instr comparison
+        // ASSERT_EQ(reg_out.WB_A, 13);
+        // ASSERT_EQ(reg_out.imm, i * ((i % 2) ? 1 : -1));
         ASSERT_EQ(reg_out.sign_bit,
                   (i * ((i % 2) ? 1 : -1) < 0) ? 0xFFFFFFFF : 0);
         ASSERT_EQ(reg_out.CONTROL_EX.ALU_SRC2, 1);
@@ -85,10 +85,10 @@ TEST(TestsDecodeNoSignal, TestOutputS)
 
         ASSERT_EQ(reg_out.D1, i);
         ASSERT_EQ(reg_out.D2, i + 1);
-        ASSERT_EQ(reg_out.PC_EX, 0);
         ASSERT_EQ(reg_out.V_EX, 0);
-        ASSERT_EQ(reg_out.WB_A, 0);
-        ASSERT_EQ(reg_out.imm, i * ((i % 2) ? 1 : -1));
+        // TODO change to instr comparison
+        // ASSERT_EQ(reg_out.WB_A, 0);
+        // ASSERT_EQ(reg_out.imm, i * ((i % 2) ? 1 : -1));
         ASSERT_EQ(reg_out.sign_bit,
                   (i * ((i % 2) ? 1 : -1) < 0) ? 0xFFFFFFFF : 0);
         ASSERT_EQ(reg_out.CONTROL_EX.ALU_SRC2, 1);
@@ -116,10 +116,10 @@ TEST(TestsDecodeNoSignal, TestOutputB)
 
         ASSERT_EQ(reg_out.D1, i);
         ASSERT_EQ(reg_out.D2, i + 1);
-        ASSERT_EQ(reg_out.PC_EX, 0);
         ASSERT_EQ(reg_out.V_EX, 0);
-        ASSERT_EQ(reg_out.WB_A, 0);
-        ASSERT_EQ(reg_out.imm, i * ((i % 2) ? 2 : -2));
+        // TODO change to instr comparison
+        // ASSERT_EQ(reg_out.WB_A, 0);
+        // ASSERT_EQ(reg_out.imm, i * ((i % 2) ? 2 : -2));
         ASSERT_EQ(reg_out.sign_bit,
                   (i * ((i % 2) ? 1 : -1) < 0) ? 0xFFFFFFFF : 0);
         ASSERT_EQ(reg_out.CONTROL_EX.ALU_SRC2, 1);
@@ -146,10 +146,10 @@ TEST(TestsDecodeNoSignal, TestOutputU)
 
         ASSERT_EQ(reg_out.D1, 0);
         ASSERT_EQ(reg_out.D2, 0);
-        ASSERT_EQ(reg_out.PC_EX, 0);
         ASSERT_EQ(reg_out.V_EX, 0);
-        ASSERT_EQ(reg_out.WB_A, i);
-        ASSERT_EQ(reg_out.imm, 0x1000);
+        // TODO change to instr comparison
+        // ASSERT_EQ(reg_out.WB_A, i);
+        // ASSERT_EQ(reg_out.imm, 0x1000);
         ASSERT_EQ(reg_out.sign_bit, 0);
         ASSERT_EQ(reg_out.CONTROL_EX.ALU_SRC2, 1);
         ASSERT_EQ(reg_out.CONTROL_EX.ALUOP, Ins::InsMnemonic::LUI);
@@ -176,10 +176,10 @@ TEST(TestsDecodeNoSignal, TestOutputJ)
 
         ASSERT_EQ(reg_out.D1, 0);
         ASSERT_EQ(reg_out.D2, 0);
-        ASSERT_EQ(reg_out.PC_EX, 0);
         ASSERT_EQ(reg_out.V_EX, 0);
-        ASSERT_EQ(reg_out.WB_A, i);
-        ASSERT_EQ(reg_out.imm, i * ((i % 2) ? 2 : -2));
+        // TODO change to instr comparison
+        // ASSERT_EQ(reg_out.WB_A, i);
+        // ASSERT_EQ(reg_out.imm, i * ((i % 2) ? 2 : -2));
         ASSERT_EQ(reg_out.sign_bit,
                   (i * ((i % 2) ? 1 : -1) < 0) ? 0xFFFFFFFF : 0);
         ASSERT_EQ(reg_out.CONTROL_EX.ALU_SRC2, 1);
@@ -208,10 +208,10 @@ TEST(TestsDecode, TestWB1)
 
     ASSERT_EQ(reg_out.D1, 0);
     ASSERT_EQ(reg_out.D2, 0);
-    ASSERT_EQ(reg_out.PC_EX, 0);
     ASSERT_EQ(reg_out.V_EX, 0);
-    ASSERT_EQ(reg_out.WB_A, 2);
-    ASSERT_EQ(reg_out.imm, 32);
+    // TODO change to instr comparison
+    // ASSERT_EQ(reg_out.WB_A, 2);
+    // ASSERT_EQ(reg_out.imm, 32);
     ASSERT_EQ(d.GetRegfileData(1), 0);
     ASSERT_EQ(reg_out.sign_bit, 0);
     ASSERT_EQ(reg_out.CONTROL_EX.ALU_SRC2, 1);
@@ -239,10 +239,10 @@ TEST(TestsDecode, TestWB2)
 
     ASSERT_EQ(reg_out.D1, 0);
     ASSERT_EQ(reg_out.D2, 0);
-    ASSERT_EQ(reg_out.PC_EX, 0);
     ASSERT_EQ(reg_out.V_EX, 0);
-    ASSERT_EQ(reg_out.WB_A, 2);
-    ASSERT_EQ(reg_out.imm, 32);
+    // TODO change to instr comparison
+    // ASSERT_EQ(reg_out.WB_A, 2);
+    // ASSERT_EQ(reg_out.imm, 32);
     ASSERT_EQ(d.GetRegfileData(1), 123);
     ASSERT_EQ(reg_out.sign_bit, 0);
     ASSERT_EQ(reg_out.CONTROL_EX.ALU_SRC2, 1);

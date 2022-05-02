@@ -13,6 +13,11 @@ struct Regfile
     void SetD(uint32_t adr, int32_t data)
     {
         assert(adr < BITNESS);
+
+        if (adr == 0) {
+            return;
+        }
+
         regs_[adr] = data;
     }
 

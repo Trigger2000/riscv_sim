@@ -7,7 +7,7 @@
 struct RegisterFetchDecode
 {
     Ins ins = Ins::MakeIns_NOP();
-    uint32_t PC = 0;
+    uint32_t PC_DE = 0;
     uint32_t PC_R = false;
 };
 
@@ -28,15 +28,10 @@ struct RegisterDecodeExecute
     int32_t D1 = 0;
     int32_t D2 = 0;
     uint32_t sign_bit = 0;
-    uint32_t PC_EX;
     uint32_t V_EX = 0;
 
     // bus 30:7
     Ins ins = Ins::MakeIns_NOP();
-
-    // TODO: remove these fields from tests and remove them from here
-    int32_t imm = 0;
-    uint32_t WB_A = 0;
 };
 
 struct RegisterExecuteMemory
